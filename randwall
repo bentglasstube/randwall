@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source /etc/randwall.conf
+
+file=$(find $path -type f |shuf -n1)
+
+echo "Picked wallpaper $file"
+
+convert $file -scale ${width}x${height}^ -gravity center -extent ${width}x${height} /tmp/wallpaper
+
+echo "Converted to $width x $height"
+
+if pgrep --full X; then
+  # TODO determine display better
+  echo "X running so set the wallpaper"
+  DISPLAY=:0 feh --bg-fill /tmp/wallpaper
+fi

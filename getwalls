@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+
+use File::Temp 'tempdir';
+use JSON;
+use LWP::UserAgent;
+
+open my $config, '<', '/etc/randwall.conf';
+while (<$config>) {
+  chomp;
+  my ($name, $value) = (/^(\w+)="(.*)"/);
+  $ENV{$name} = $value;
+}
+
+my $ua = LWP::UserAgent->new(agent => 'Wallpaper Snatcher/1.0');
+my $response = $ua->get("http://reddit.com/r/$ENV{subreddit}.json?limit=$ENV{count}");
+
+if ($response->is_error) {
+  say STDERR $response->status_line;
+  exit 1;
+}
+
+my $page = from_json($response->content);
+my $dir = tempdir(CLEANUP => 1);
+
+chdir $dir;
+
+my @downloads = ();
+foreach my $link (@{$page->{data}{children}}) {
+  my $link = $link->{data}{url};
+  my $head = $ua->head($link);
+  if ($head->content_type =~ /^image/i) {
+    push @downloads, $link;
+  } else {
+    if ($link =~ m{^https?://imgur\.com/a/(\w+)$}) {
+      my $page = $ua->get($link . '/noscript')->decoded_content;
+      while ($page =~ m{src="(//i\.imgur\.com/\w+\.jpg)}gc) {
+        push @downloads, "http:$1";
+      }
+    } elsif ($link =~ m{^https?://imgur\.com/(\w+)$}) {
+      push @downloads, "http://i.imgur.com/$1.jpg";
+    } else {
+      say STDERR "Unsupported url: $link";
+    }
+  }
+}
+
+system('wget', '-q', $_) foreach @downloads;
+
+system('feh', '--cycle-once', '-Zr', '.', '-A', "cp %f $ENV{path}");
+
+chdir $ENV{HOME};

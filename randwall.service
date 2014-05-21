@@ -1,0 +1,13 @@
+[Unit]
+Description="Wallpaper randomizer"
+Before=slim.service
+
+[Service]
+User=alan
+Environment=DISPLAY=:0
+Type=oneshot
+ExecStart=/usr/bin/randwall
+
+[Install]
+WantedBy=multi-user.target
+

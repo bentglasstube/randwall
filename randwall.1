@@ -1,0 +1,46 @@
+.TH RandWall
+.PP
+Random wallpapers and a matching login screen
+.PP
+This is a collection of things that will give you some randomly picked
+wallpapers to use for X11 and with SLiM (and slimlock).  It uses systemd and is
+generally geared toward arch linux but I suppose you could use it elsewhere if
+you want.
+.SH Prerequisites
+.RS
+.IP \(bu 2
+bash
+.IP \(bu 2
+feh
+.IP \(bu 2
+find
+.IP \(bu 2
+imagemagick
+.IP \(bu 2
+shuf (coreutils)
+.IP \(bu 2
+pgregp
+.RE
+.SH Wallpaper picking script
+.PP
+This script (\fB\fC/usr/bin/randwall\fR) will read a configuration file from
+\fB\fC/etc/randwall.conf\fR and choose a random wallpaper to use.  It will resize and
+crop the image to the configured resolution and save it in \fB\fC/tmp/\fR\&.
+.SH Wallpaper fetching script
+.PP
+This script (\fB\fC/usr/bin/getwalls\fR) will look on reddit for wallpapers.  It uses
+the same configuration script as above.
+.SH Installation
+.PP
+Running \fB\fCmake install\fR should get everything put in place.  After that you will
+want to enable the service with \fB\fCsystemctl enable randwall\fR\&.  You will also
+probably want to add something to your \fB\fC\&.xinitrc\fR to set the wallpaper when your
+X session starts.  I use the following: \fB\fCfeh \-\-bg\-fill /tmp/wallpaper &\fR\&.
+.SH Customization
+.PP
+You can customize the SLiM theme panel.  There is an SVG file of it in the
+\fB\fCtheme\fR directory.  The makefile will use inkscape to make it into the png that
+SLiM wants.
+.PP
+If you want to customize the install directories or whatever, you are on your
+own.  I wish you luck.
