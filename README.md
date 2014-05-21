@@ -51,3 +51,10 @@ SLiM wants.
 
 If you want to customize the install directories or whatever, you are on your
 own.  I wish you luck.
+
+## Preview
+
+Here is a sample of what the login screen will look like if you happen to have
+this same wallpaper as me in your list and it picks it.
+
+![preview](https://raw.github.com/bentglasstube/randwall/master/preview.png)
