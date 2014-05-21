@@ -18,6 +18,6 @@ install: all
 	cp randwall.service $(SYSTEMD)
 	cp randwall.conf $(ETC)
 	cp randwall.1 $(MAN)
-	cp -r theme $(PREFIX)/randwall
+	cp -r theme $(SLIM)/randwall
 
 .PHONY: all install readme
