@@ -32,7 +32,16 @@ the same configuration script as above.
 Running `make install` should get everything put in place.  After that you will
 want to enable the service with `systemctl enable randwall`.  You will also
 probably want to add something to your `.xinitrc` to set the wallpaper when your
-X session starts.  I use the following: `feh --bg-fill /tmp/wallpaper &`.
+X session starts.  I use the following: `feh --bg-fill /tmp/wallpaper &`.  You
+will also probably want to edit your SLiM config to use the `randwall` theme.
+
+### Notice
+
+SLiM will not run if you set this theme and there is no wallpaper found at
+`/tmp/wallpaper`.  You can change the scripts and the theme symlink to point
+elsewhere if you are worried about it.  It should work if the `randwall` service
+is enabled, but it can fail if, for example, your wallpapers are stored in an
+encrypted volume.
 
 ## Customization
 
