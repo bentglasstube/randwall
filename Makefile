@@ -16,6 +16,7 @@ install: all
 	cp randwall $(BIN)
 	cp getwalls $(BIN)
 	cp randwall.service $(SYSTEMD)
+	cp randwall.timer $(SYSTEMD)
 	cp randwall.conf $(ETC)
 	cp randwall.1 $(MAN)
 	cp -r theme $(SLIM)/randwall

@@ -1,0 +1,12 @@
+[Unit]
+Description=Wallpaper change timer
+
+[Timer]
+OnActiveSec=30min
+OnUnitActiveSec=30min
+Unit=randwall.service
+AccuracySec=1
+
+[Install]
+WantedBy=basic.target
+
