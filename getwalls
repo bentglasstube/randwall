@@ -52,6 +52,7 @@ foreach my $link (@{$page->{data}{children}}) {
 printf "Downloading %u files\n", scalar @downloads;
 
 system('wget', '-q', $_) foreach @downloads;
+system('rm', '*.1');
 system('cp', $_, $ENV{path}) for split /\n/, qx{sxiv -tobr .};
 
 chdir $ENV{HOME};
