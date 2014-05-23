@@ -36,7 +36,7 @@ foreach my $link (@{$page->{data}{children}}) {
   if ($head->content_type =~ /^image/i) {
     push @downloads, $link;
   } else {
-    if ($link =~ m{^https?://imgur\.com/a/(\w+)$}) {
+    if ($link =~ m{^https?://imgur\.com/a/(\w+)(?:#\d+)?$}) {
       my $page = $ua->get($link . '/noscript')->decoded_content;
       while ($page =~ m{src="(//i\.imgur\.com/\w+\.jpg)}gc) {
         push @downloads, "http:$1";
@@ -49,8 +49,9 @@ foreach my $link (@{$page->{data}{children}}) {
   }
 }
 
-system('wget', '-q', $_) foreach @downloads;
+printf "Downloading %u files\n", scalar @downloads;
 
-system('feh', '--cycle-once', '-Zr', '.', '-A', "cp %f $ENV{path}");
+system('wget', '-q', $_) foreach @downloads;
+system('cp', $_, $ENV{path}) for split /\n/, qx{sxiv -tobr .};
 
 chdir $ENV{HOME};
