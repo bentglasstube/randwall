@@ -36,13 +36,21 @@ foreach my $link (@{$page->{data}{children}}) {
   if ($head->content_type =~ /^image/i) {
     push @downloads, $link;
   } else {
-    if ($link =~ m{^https?://imgur\.com/a/(\w+)(?:#\d+)?$}) {
+    if ($link =~ m{^https?://(?:.*\.)?imgur\.com/a/(\w+)(?:#\d+)?$}) {
       my $page = $ua->get($link . '/noscript')->decoded_content;
       while ($page =~ m{src="(//i\.imgur\.com/\w+\.jpg)}gc) {
         push @downloads, "http:$1";
       }
-    } elsif ($link =~ m{^https?://imgur\.com/(\w+)$}) {
+    } elsif ($link =~ m{^https?://(?:.*\.)?imgur\.com/(\w+)$}) {
       push @downloads, "http://i.imgur.com/$1.jpg";
+    } elsif ($link =~ m{^https?://(?:.*\.)?flickr.com/photos/(.*)/(\d+)}) {
+      my $page = $ua->get("https://www.flickr.com/photos/$1/$2/sizes/h")->decoded_content;
+      my ($url) = ($page =~ m{<img src="(https://farm\d+.staticflickr.com/[^"]+)">});
+      push @downloads, $url if $url;
+    } elsif ($link =~ m{^https?://(?:.*\.)?500px.com}) {
+      my $page = $ua->get($link)->decoded_content;
+      my ($url) = ($page =~ m{src="(http://\w+cdn.500px.org/[^"]+)"});
+      push @downloads, $url if $url;
     } else {
       say STDERR "Unsupported url: $link";
     }
@@ -52,7 +60,7 @@ foreach my $link (@{$page->{data}{children}}) {
 printf "Downloading %u files\n", scalar @downloads;
 
 system('wget', '-q', $_) foreach @downloads;
-system('rm', '*.1');
-system('cp', $_, $ENV{path}) for split /\n/, qx{sxiv -tobr .};
+system('rm *.1');
+system('cp', $_, $ENV{path}) for split /\n/, qx{sxiv -tor .};
 
 chdir $ENV{HOME};
